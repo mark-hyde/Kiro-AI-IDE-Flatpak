@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Kiro IDE
+Comment=AI-powered development environment
+Exec=kiro
+Icon=dev.kiro.KiroIDE
+Terminal=false
+Type=Application
+Categories=Development;IDE;
