@@ -6,12 +6,6 @@
 
 ---
 
-<p align="center">
-<picture>
-  <img src="https://github.com/AI-Services-Review/Kiro-AI-IDE-Flatpak/raw/main/git-assets/Kiro-AI-IDE-Screenshot.jpg" width="760" >
-</picture>
-</p>
-
 ## 🚀 Kiro IDE by AWS 
 
 Kiro is an AI-powered integrated development environment that helps developers go from concept to production through spec-driven development, bridging the gap between rapid prototyping ("vibe coding") and production-ready systems.
