@@ -1,0 +1,114 @@
+# Kiro IDE Flatpak Manifest
+app-id: dev.kiro.KiroIDE
+runtime: org.freedesktop.Platform
+runtime-version: "25.08"
+sdk: org.freedesktop.Sdk
+command: kiro
+desktop-file-name-suffix: Kiro
+
+modules:
+  # Pre-built Python 3.10 as the main Python
+  - name: python3.10-prebuilt
+    buildsystem: simple
+    build-commands:
+      # Extract pre-built Python 3.10
+      - mkdir -p /app/python3.10
+      - tar -xzf cpython-3.10.19-prebuilt.tar.gz -C /app/python3.10 --strip-components=1
+      # Create Python symlinks (make 3.10 the default)
+      - mkdir -p /app/bin /app/usr/bin /app/home
+      - ln -sf /app/python3.10/bin/python3.10 /app/bin/python
+      - ln -sf /app/python3.10/bin/python3.10 /app/bin/python3
+      - ln -sf /app/python3.10/bin/python3.10 /app/bin/python3.10
+      # Create pip symlinks
+      - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip
+      - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip3
+      - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip3.10
+      # Create symlinks to /usr/bin for pipx/uvx shebang compatibility
+      - ln -sf /app/python3.10/bin/python3.10 /app/usr/bin/python
+      - ln -sf /app/python3.10/bin/python3.10 /app/usr/bin/python3
+      # Create symlink for python user packages (points to actual pip --user location)
+      - ln -sf ~/.var/app/dev.kiro.KiroIDE/data/python /app/home/python-user
+      # Pre-create pipx directories to avoid runtime issues
+      - mkdir -p ~/.var/app/dev.kiro.KiroIDE/data/python/pipx/venvs
+      - mkdir -p ~/.var/app/dev.kiro.KiroIDE/data/python/pipx/shared
+    sources:
+      - type: file
+        url: https://github.com/indygreg/python-build-standalone/releases/download/20251217/cpython-3.10.19+20251217-x86_64-unknown-linux-gnu-install_only.tar.gz
+        sha256: b501791dd2a2752f3f35329c4af736983cc5ef5e12e50776c13c752cbfa9cbf8
+        dest-filename: cpython-3.10.19-prebuilt.tar.gz
+
+  # Main Kiro IDE application
+  - name: kiro
+    buildsystem: simple
+    build-commands:
+      # Extract Kiro IDE
+      - mkdir -p /app/Kiro
+      - tar -xzf kiro-ide-0.8.206-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
+      - rm -f /app/Kiro/chrome-sandbox
+      # Copy icon from extracted Kiro directory
+      - cp /app/Kiro/resources/app/node_modules/@kiro/sign-in-page/src/components/kiro-logo/kiro-icon.svg dev.kiro.KiroIDE.svg
+      # Install wrapper scripts
+      - install -Dm755 git-wrapper.sh /app/bin/git
+      - install -Dm755 kiro-wrapper.sh /app/bin/kiro
+      # Install desktop file
+      - install -Dm644 dev.kiro.KiroIDE.desktop /app/share/applications/dev.kiro.KiroIDE.desktop
+      # Install icon (copied from extracted Kiro)
+      - install -Dm644 dev.kiro.KiroIDE.svg /app/share/icons/hicolor/scalable/apps/dev.kiro.KiroIDE.svg
+      # Configure default settings
+      - install -Dm644 default-settings.json /app/share/kiro-ide/default-settings.json
+    sources:
+      - type: file
+        path: kiro-ide-0.8.206-stable-linux-x64.tar.gz
+      - type: file
+        path: git-wrapper.sh
+      - type: file
+        path: kiro-wrapper.sh
+      - type: file
+        path: dev.kiro.KiroIDE.desktop
+      - type: file
+        path: default-settings.json
+
+finish-args:
+  # Network and IPC
+  - --share=network
+  - --share=ipc
+  
+  # Display and Graphics
+  - --socket=x11
+  - --socket=wayland
+  - --device=dri
+  
+  # Audio
+  - --socket=pulseaudio
+  
+  # Authentication and Security
+  - --socket=ssh-auth
+  
+  # D-Bus Communication
+  - --socket=session-bus
+  - --socket=system-bus
+  - --talk-name=org.freedesktop.Flatpak
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=ca.desrt.dconf
+  - --own-name=org.mpris.MediaPlayer2.chromium.*
+  
+  # File System Access
+  - --filesystem=home
+  - --filesystem=/tmp
+  - --filesystem=/var/tmp
+  - --filesystem=xdg-run/dconf
+  - --filesystem=xdg-run/keyring
+  - --filesystem=~/.var/app/dev.kiro.KiroIDE/config/dconf:ro
+  - --filesystem=host-os:ro
+  
+  # Environment Variables
+  - --env=DCONF_USER_CONFIG_DIR=.config/dconf
+  - --env=ELECTRON_TRASH=gio
+  - --env=ELECTRON_NO_SANDBOX=1
+  - --env=ELECTRON_OZONE_PLATFORM_HINT=auto
+  - --env=GTK_MODULES=
+  - --env=PATH=/app/home/python-user/bin:/app/usr/bin:/app/bin:/usr/bin:/bin
+  - --env=PYTHONUSERBASE=/app/home/python-user
+  - --env=PIPX_HOME=/app/home/python-user/pipx
+  - --env=PIPX_BIN_DIR=/app/home/python-user/bin

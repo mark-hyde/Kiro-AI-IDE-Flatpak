@@ -64,21 +64,21 @@ cd Kiro-AI-IDE-Flatpak
 ### 2. Download the Official Kiro IDE Distribution
 
 Go to the [Kiro IDE website](https://kiro.dev/) and download the Linux version.  
-Save the downloaded archive as:
+Place the downloaded archive in your cloned repository directory (e.g., `kiro-ide-0.8.206-stable-linux-x64.tar.gz`).
 
-```text
-kiro.tar.gz
-```
-
-Place `kiro.tar.gz` in your cloned repository directory.
+**Note:** Update the filename in `kiro-ide.yaml` if your downloaded version differs from the one in this repository.
 
 ### 3. Make Sure Required Files Exist
 
 Your project folder should now contain:
-- `kiro-ide.json` (the Flatpak manifest)
+- `kiro-ide.yaml` (the Flatpak manifest)
+- `git-wrapper.sh` (Git integration wrapper)
+- `kiro-wrapper.sh` (Kiro launcher wrapper)
 - `dev.kiro.KiroIDE.desktop` (desktop launcher file)
-- `dev.kiro.KiroIDE.png` (application icon)
-- `kiro.tar.gz` (downloaded Kiro IDE distribution)
+- `default-settings.json` (default Kiro settings)
+- `kiro-ide-0.8.206-stable-linux-x64.tar.gz` (downloaded Kiro IDE distribution)
+
+**Note:** The application icon is automatically extracted from the Kiro IDE tarball during build.
 
 ### 4. Install Flatpak and Flatpak Builder
 
@@ -96,30 +96,54 @@ sudo dnf install flatpak flatpak-builder
 ### 5. Install Flatpak Runtimes
 
 ```bash
-flatpak install flathub org.freedesktop.Platform//23.08
-flatpak install flathub org.freedesktop.Sdk//23.08
+flatpak install flathub org.freedesktop.Platform//25.08
+flatpak install flathub org.freedesktop.Sdk//25.08
 ```
 
-### 6. Build the Flatpak
+### 6. Build and Install the Flatpak
 
 ```bash
-flatpak-builder --force-clean build-dir kiro-ide.json
+flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
 ```
 
-### 7. Install the Built App
+### 7. Run Kiro IDE
+
+**From desktop:** Launch "Kiro IDE" from your application menu.
+
+**From terminal:**
+```bash
+flatpak run dev.kiro.KiroIDE
+```
+
+**Optional: Add command-line launcher**
+
+For quick access from the terminal, copy the `kiro` launcher script to a directory in your PATH:
 
 ```bash
-flatpak-builder --user --install --force-clean build-dir kiro-ide.json
+sudo cp kiro /usr/local/bin/kiro
+sudo chmod +x /usr/local/bin/kiro
 ```
 
-### 8. Run Kiro IDE
-
+Then you can launch Kiro IDE simply by typing:
 ```bash
-flatpak run dev.kiro.KiroIDE --no-sandbox
+kiro
 ```
 
-**Note:**  
-Electron-based apps like Kiro IDE require the `--no-sandbox` flag due to Flatpak’s sandboxing model.
+---
+
+## Python Support
+
+This Flatpak includes **Python 3.10** with full pip and pipx support for Python development:
+
+- **Python commands:** `python`, `python3`, `python3.10`
+- **Package management:** `pip`, `pip3`, `pip3.10`, `pipx`
+- **Isolated packages:** User-installed packages are isolated to the Flatpak environment
+
+Install Python packages inside the Flatpak:
+```bash
+flatpak run --command=bash dev.kiro.KiroIDE
+pip install --user <package-name>
+```
 
 ---
 
@@ -127,8 +151,12 @@ Electron-based apps like Kiro IDE require the `--no-sandbox` flag due to Flatpak
 
 To update to a new Kiro IDE version:
 1. Download the latest Linux tarball from the official site.
-2. Replace `kiro.tar.gz` in your project folder.
-3. Re-run the build and install steps above.
+2. Replace the tarball in your project folder.
+3. Update the filename in `kiro-ide.yaml` (two locations: tar command and source path).
+4. Re-run the build and install command:
+   ```bash
+   flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
+   ```
 
 ---
 
@@ -145,8 +173,8 @@ flatpak uninstall dev.kiro.KiroIDE
 ## Troubleshooting
 
 - If you see errors about missing runtimes or dependencies, repeat step 5.
-- If icon does not appear, ensure your icon file is named `dev.kiro.KiroIDE.png` and referenced in the desktop file as `Icon=dev.kiro.KiroIDE`.
-- For `chrome-sandbox` errors, always launch with `--no-sandbox`.
+- If the icon does not appear, ensure the Kiro IDE tarball is present during build (icon is extracted automatically).
+- For Git integration issues, verify that `git-wrapper.sh` is executable and `default-settings.json` points to `/app/bin/git`.
 
 ---
 
