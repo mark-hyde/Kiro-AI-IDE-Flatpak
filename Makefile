@@ -29,14 +29,16 @@ install:
 
 # Install the kiro launcher script to PATH
 install-launcher:
-	@echo "Installing 'kiro' launcher to /usr/local/bin..."
+	@echo "Installing 'kiro' launcher to ~/.local/bin..."
 	@if [ ! -f kiro ]; then \
 		echo "Error: kiro launcher script not found!"; \
 		exit 1; \
 	fi
-	sudo cp kiro /usr/local/bin/kiro
-	sudo chmod +x /usr/local/bin/kiro
-	@echo "✓ Launcher installed! You can now run 'kiro' from anywhere."
+	mkdir -p ~/.local/bin
+	cp kiro ~/.local/bin/kiro
+	chmod +x ~/.local/bin/kiro
+	@echo "✓ Launcher installed to ~/.local/bin/kiro"
+	@echo "  Make sure ~/.local/bin is in your PATH."
 
 # Build, install Flatpak, and install launcher
 all: install install-launcher
@@ -52,7 +54,7 @@ uninstall:
 	@echo "✓ Kiro IDE Flatpak uninstalled."
 	@echo ""
 	@echo "To remove the launcher, run:"
-	@echo "  sudo rm /usr/local/bin/kiro"
+	@echo "  rm ~/.local/bin/kiro"
 
 # Clean build artifacts
 clean:

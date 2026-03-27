@@ -43,7 +43,7 @@ modules:
     build-commands:
       # Extract Kiro IDE
       - mkdir -p /app/Kiro
-      - tar -xzf kiro-ide-0.8.206-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
+      - tar -xzf kiro-ide-0.11.107-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
       - rm -f /app/Kiro/chrome-sandbox
       # Copy icon from extracted Kiro directory
       - cp /app/Kiro/resources/app/node_modules/@kiro/sign-in-page/src/components/kiro-logo/kiro-icon.svg dev.kiro.KiroIDE.svg
@@ -58,7 +58,7 @@ modules:
       - install -Dm644 default-settings.json /app/share/kiro-ide/default-settings.json
     sources:
       - type: file
-        path: kiro-ide-0.8.206-stable-linux-x64.tar.gz
+        path: kiro-ide-0.11.107-stable-linux-x64.tar.gz
       - type: file
         path: git-wrapper.sh
       - type: file

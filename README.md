@@ -102,9 +102,26 @@ flatpak install flathub org.freedesktop.Sdk//25.08
 
 ### 6. Build and Install the Flatpak
 
+**Using Make (recommended):**
+```bash
+make all
+```
+
+This will build the Flatpak, install it, and add the `kiro` command to your PATH.
+
+**Or manually:**
 ```bash
 flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
 ```
+
+**Available Make targets:**
+- `make help` - Show available commands
+- `make build` - Build the Flatpak only
+- `make install` - Build and install the Flatpak
+- `make install-launcher` - Install `kiro` command to `/usr/local/bin`
+- `make all` - Build, install Flatpak, and install launcher
+- `make uninstall` - Uninstall the Flatpak
+- `make clean` - Clean build artifacts
 
 ### 7. Run Kiro IDE
 
@@ -115,16 +132,7 @@ flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
 flatpak run dev.kiro.KiroIDE
 ```
 
-**Optional: Add command-line launcher**
-
-For quick access from the terminal, copy the `kiro` launcher script to a directory in your PATH:
-
-```bash
-sudo cp kiro /usr/local/bin/kiro
-sudo chmod +x /usr/local/bin/kiro
-```
-
-Then you can launch Kiro IDE simply by typing:
+**Or simply (if you ran `make all` or `make install-launcher`):**
 ```bash
 kiro
 ```
@@ -164,8 +172,16 @@ To update to a new Kiro IDE version:
 
 To remove Kiro IDE Flatpak from your system:
 
+**Using Make:**
+```bash
+make uninstall
+rm ~/.local/bin/kiro  # If you installed the launcher
+```
+
+**Or manually:**
 ```bash
 flatpak uninstall dev.kiro.KiroIDE
+rm ~/.local/bin/kiro  # If you installed the launcher
 ```
 
 ---
