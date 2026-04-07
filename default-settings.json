@@ -1,0 +1,5 @@
+{
+  "window.titleBarStyle": "native",
+  "git.path": "/app/bin/git",
+  "python.defaultInterpreterPath": "/app/python3.10/bin/python3.10"
+}

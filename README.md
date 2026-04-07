@@ -64,21 +64,23 @@ cd Kiro-AI-IDE-Flatpak
 ### 2. Download the Official Kiro IDE Distribution
 
 Go to the [Kiro IDE website](https://kiro.dev/) and download the Linux version.  
-Save the downloaded archive as:
+Place the downloaded archive in your cloned repository directory (e.g., `kiro-ide-0.11.130-stable-linux-x64.tar.gz`).
 
-```text
-kiro.tar.gz
-```
-
-Place `kiro.tar.gz` in your cloned repository directory.
+**Note:** Update the filename in `kiro-ide.yaml` if your downloaded version differs from the one in this repository (two locations: tar command and source path).
 
 ### 3. Make Sure Required Files Exist
 
 Your project folder should now contain:
-- `kiro-ide.json` (the Flatpak manifest)
+- `Makefile` (build automation)
+- `kiro-ide.yaml` (the Flatpak manifest)
+- `kiro` (command-line launcher script)
+- `git-wrapper.sh` (Git integration wrapper)
+- `kiro-wrapper.sh` (Kiro launcher wrapper)
 - `dev.kiro.KiroIDE.desktop` (desktop launcher file)
-- `dev.kiro.KiroIDE.png` (application icon)
-- `kiro.tar.gz` (downloaded Kiro IDE distribution)
+- `default-settings.json` (default Kiro settings)
+- `kiro-ide-0.11.130-stable-linux-x64.tar.gz` (downloaded Kiro IDE distribution)
+
+**Note:** The application icon is automatically extracted from the Kiro IDE tarball during build.
 
 ### 4. Install Flatpak and Flatpak Builder
 
@@ -96,30 +98,50 @@ sudo dnf install flatpak flatpak-builder
 ### 5. Install Flatpak Runtimes
 
 ```bash
-flatpak install flathub org.freedesktop.Platform//23.08
-flatpak install flathub org.freedesktop.Sdk//23.08
+flatpak install flathub org.freedesktop.Platform//25.08
+flatpak install flathub org.freedesktop.Sdk//25.08
 ```
 
-### 6. Build the Flatpak
+### 6. Build and Install
 
 ```bash
-flatpak-builder --force-clean build-dir kiro-ide.json
+make install
 ```
 
-### 7. Install the Built App
+This builds the Flatpak, installs it, and adds the `kiro` command to `~/.local/bin`.
 
+**Available Make targets:**
+- `make help` - Show available commands
+- `make install` - Build and install the Flatpak and `kiro` launcher
+- `make uninstall` - Uninstall the Flatpak and remove `kiro` launcher
+- `make clean` - Clean build artifacts
+
+### 7. Run Kiro IDE
+
+**From terminal:**
 ```bash
-flatpak-builder --user --install --force-clean build-dir kiro-ide.json
+kiro
 ```
 
-### 8. Run Kiro IDE
+**From desktop:** Launch "Kiro IDE" from your application menu.
 
+Make sure `~/.local/bin` is in your PATH.
+
+---
+
+## Python Support
+
+This Flatpak includes **Python 3.10** with full pip and pipx support for Python development:
+
+- **Python commands:** `python`, `python3`, `python3.10`
+- **Package management:** `pip`, `pip3`, `pip3.10`, `pipx`
+- **Isolated packages:** User-installed packages are isolated to the Flatpak environment
+
+Install Python packages inside the Flatpak:
 ```bash
-flatpak run dev.kiro.KiroIDE --no-sandbox
+flatpak run --command=bash dev.kiro.KiroIDE
+pip install --user <package-name>
 ```
-
-**Note:**  
-Electron-based apps like Kiro IDE require the `--no-sandbox` flag due to Flatpak’s sandboxing model.
 
 ---
 
@@ -127,8 +149,12 @@ Electron-based apps like Kiro IDE require the `--no-sandbox` flag due to Flatpak
 
 To update to a new Kiro IDE version:
 1. Download the latest Linux tarball from the official site.
-2. Replace `kiro.tar.gz` in your project folder.
-3. Re-run the build and install steps above.
+2. Replace the tarball in your project folder.
+3. Update the filename in `kiro-ide.yaml` (two locations: tar command and source path).
+4. Re-run:
+   ```bash
+   make install
+   ```
 
 ---
 
@@ -137,7 +163,7 @@ To update to a new Kiro IDE version:
 To remove Kiro IDE Flatpak from your system:
 
 ```bash
-flatpak uninstall dev.kiro.KiroIDE
+make uninstall
 ```
 
 ---
@@ -145,8 +171,8 @@ flatpak uninstall dev.kiro.KiroIDE
 ## Troubleshooting
 
 - If you see errors about missing runtimes or dependencies, repeat step 5.
-- If icon does not appear, ensure your icon file is named `dev.kiro.KiroIDE.png` and referenced in the desktop file as `Icon=dev.kiro.KiroIDE`.
-- For `chrome-sandbox` errors, always launch with `--no-sandbox`.
+- If the icon does not appear, ensure the Kiro IDE tarball is present during build (icon is extracted automatically).
+- For Git integration issues, verify that `git-wrapper.sh` is executable and `default-settings.json` points to `/app/bin/git`.
 
 ---
 

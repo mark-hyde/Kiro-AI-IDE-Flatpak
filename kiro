@@ -1,0 +1,4 @@
+#!/bin/bash
+export GTK_MODULES=
+flatpak run dev.kiro.KiroIDE "$@" &
+disown

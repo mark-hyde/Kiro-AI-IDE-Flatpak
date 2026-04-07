@@ -1,5 +1,15 @@
-kiro.tar.gz
+kiro*.tar.gz
 kiro-ide.flatpak
 build-dir
 repo
 .flatpak-builder
+
+# Extracted directories (temporary)
+Kiro/
+kiro-logo/
+app/
+
+# Old/backup files
+*.backup
+dev.kiro.KiroIDE.png
+extract-icon.sh
