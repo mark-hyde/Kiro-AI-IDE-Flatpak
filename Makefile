@@ -1,63 +1,44 @@
-.PHONY: help build install install-launcher uninstall clean all
+.PHONY: help install uninstall clean
+
+TARBALL := $(wildcard kiro-ide-*-stable-linux-x64.tar.gz)
 
 # Default target
 help:
 	@echo "Kiro IDE Flatpak Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make build            - Build the Flatpak"
-	@echo "  make install          - Build and install the Flatpak"
-	@echo "  make install-launcher - Install 'kiro' command to /usr/local/bin"
-	@echo "  make all              - Build, install Flatpak, and install launcher"
-	@echo "  make uninstall        - Uninstall the Flatpak"
-	@echo "  make clean            - Clean build artifacts"
+	@echo "  make install   - Build and install the Flatpak and 'kiro' launcher"
+	@echo "  make uninstall - Uninstall the Flatpak and remove 'kiro' launcher"
+	@echo "  make clean     - Clean build artifacts"
 	@echo ""
 
-# Build the Flatpak
-build:
-	@echo "Building Kiro IDE Flatpak..."
-	flatpak-builder --force-clean build-dir kiro-ide.yaml
-
-# Build and install the Flatpak
+# Build and install the Flatpak and launcher
 install:
-	@echo "Building and installing Kiro IDE Flatpak..."
-	flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
-	@echo ""
-	@echo "✓ Kiro IDE Flatpak installed successfully!"
-	@echo "  Run with: flatpak run dev.kiro.KiroIDE"
-	@echo "  Or install launcher with: make install-launcher"
-
-# Install the kiro launcher script to PATH
-install-launcher:
-	@echo "Installing 'kiro' launcher to ~/.local/bin..."
-	@if [ ! -f kiro ]; then \
-		echo "Error: kiro launcher script not found!"; \
+	@if [ -z "$(TARBALL)" ]; then \
+		echo "Error: No Kiro IDE tarball found!"; \
+		echo "Download from https://kiro.dev/downloads/ and place in this directory."; \
 		exit 1; \
 	fi
-	mkdir -p ~/.local/bin
-	cp kiro ~/.local/bin/kiro
-	chmod +x ~/.local/bin/kiro
-	@echo "✓ Launcher installed to ~/.local/bin/kiro"
-	@echo "  Make sure ~/.local/bin is in your PATH."
-
-# Build, install Flatpak, and install launcher
-all: install install-launcher
+	@echo "Building and installing Kiro IDE Flatpak..."
+	flatpak-builder --user --install --force-clean build-dir kiro-ide.yaml
+	@mkdir -p ~/.local/bin
+	@cp kiro ~/.local/bin/kiro
+	@chmod +x ~/.local/bin/kiro
 	@echo ""
-	@echo "✓ Complete! Kiro IDE is ready to use."
+	@echo "✓ Kiro IDE installed successfully!"
 	@echo "  Run from terminal: kiro"
 	@echo "  Or from desktop: Launch 'Kiro IDE' from your application menu"
+	@echo "  Make sure ~/.local/bin is in your PATH."
 
-# Uninstall the Flatpak
+# Uninstall the Flatpak and remove launcher
 uninstall:
-	@echo "Uninstalling Kiro IDE Flatpak..."
+	@echo "Uninstalling Kiro IDE..."
 	flatpak uninstall --user dev.kiro.KiroIDE
-	@echo "✓ Kiro IDE Flatpak uninstalled."
-	@echo ""
-	@echo "To remove the launcher, run:"
-	@echo "  rm ~/.local/bin/kiro"
+	@rm -f ~/.local/bin/kiro
+	@echo "✓ Kiro IDE uninstalled."
 
 # Clean build artifacts
 clean:
 	@echo "Cleaning build artifacts..."
-	rm -rf build-dir .flatpak-builder
+	@rm -rf build-dir .flatpak-builder
 	@echo "✓ Build artifacts cleaned."
