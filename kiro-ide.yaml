@@ -16,16 +16,16 @@ modules:
       - tar -xzf cpython-3.10.19-prebuilt.tar.gz -C /app/python3.10 --strip-components=1
       # Create Python symlinks (make 3.10 the default)
       - mkdir -p /app/bin /app/usr/bin /app/home
-      - ln -sf /app/python3.10/bin/python3.10 /app/bin/python
-      - ln -sf /app/python3.10/bin/python3.10 /app/bin/python3
       - ln -sf /app/python3.10/bin/python3.10 /app/bin/python3.10
+      - ln -sf /app/bin/python3.10 /app/bin/python3
+      - ln -sf /app/bin/python3 /app/bin/python
       # Create pip symlinks
-      - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip
-      - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip3
       - ln -sf /app/python3.10/bin/pip3.10 /app/bin/pip3.10
+      - ln -sf /app/bin/pip3.10 /app/bin/pip3
+      - ln -sf /app/bin/pip3 /app/bin/pip
       # Create symlinks to /usr/bin for pipx/uvx shebang compatibility
-      - ln -sf /app/python3.10/bin/python3.10 /app/usr/bin/python
-      - ln -sf /app/python3.10/bin/python3.10 /app/usr/bin/python3
+      - ln -sf /app/bin/python3 /app/usr/bin/python
+      - ln -sf /app/bin/python3 /app/usr/bin/python3
       # Create symlink for python user packages (points to actual pip --user location)
       - ln -sf ~/.var/app/dev.kiro.KiroIDE/data/python /app/home/python-user
       # Pre-create pipx directories to avoid runtime issues
@@ -43,7 +43,7 @@ modules:
     build-commands:
       # Extract Kiro IDE
       - mkdir -p /app/Kiro
-      - tar -xzf kiro-ide-0.11.107-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
+      - tar -xzf kiro-ide-0.11.130-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
       - rm -f /app/Kiro/chrome-sandbox
       # Copy icon from extracted Kiro directory
       - cp /app/Kiro/resources/app/node_modules/@kiro/sign-in-page/src/components/kiro-logo/kiro-icon.svg dev.kiro.KiroIDE.svg
@@ -58,7 +58,7 @@ modules:
       - install -Dm644 default-settings.json /app/share/kiro-ide/default-settings.json
     sources:
       - type: file
-        path: kiro-ide-0.11.107-stable-linux-x64.tar.gz
+        path: kiro-ide-0.11.130-stable-linux-x64.tar.gz
       - type: file
         path: git-wrapper.sh
       - type: file
