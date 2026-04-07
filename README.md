@@ -31,7 +31,7 @@ All code execution happens locally, with transparent actions and data remaining 
 
 Unlike traditional AI coding assistants that focus primarily on code generation, Kiro emphasizes creating and maintaining project documentation, specs, and technical blueprints automatically as code evolves. It works agnostically with any technology stack and cloud provider, not just AWS.
 
-**💡 Free during public preview** with some limits!  [Compare Kiro with Replit, Lovable, Bolt, Cursor and Windsurf](https://www.aiservices.review/review/ai-code-generators/top-6-vibe-coding-ai-tools-of-2025-replit-lovable-bolt-cursor-windsurf-kiro-compared)
+**💡 Free during public preview** with some limits!
 
 ## Why Use Flatpak?
 
@@ -57,7 +57,7 @@ If you're experimenting with new tools like Kiro IDE, Flatpak helps ensure any b
 ### 1. Clone This Repository
 
 ```bash
-git clone https://github.com/AI-Services-Review/Kiro-AI-IDE-Flatpak.git
+git clone https://github.com/mark-hyde/Kiro-AI-IDE-Flatpak.git
 cd Kiro-AI-IDE-Flatpak
 ```
 
