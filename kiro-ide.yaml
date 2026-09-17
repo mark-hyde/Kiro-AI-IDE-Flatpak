@@ -4,7 +4,6 @@ runtime: org.freedesktop.Platform
 runtime-version: "25.08"
 sdk: org.freedesktop.Sdk
 command: kiro
-desktop-file-name-suffix: Kiro
 
 modules:
   # Pre-built Python 3.10 as the main Python
@@ -28,9 +27,7 @@ modules:
       - ln -sf /app/bin/python3 /app/usr/bin/python3
       # Create symlink for python user packages (points to actual pip --user location)
       - ln -sf ~/.var/app/dev.kiro.KiroIDE/data/python /app/home/python-user
-      # Pre-create pipx directories to avoid runtime issues
-      - mkdir -p ~/.var/app/dev.kiro.KiroIDE/data/python/pipx/venvs
-      - mkdir -p ~/.var/app/dev.kiro.KiroIDE/data/python/pipx/shared
+
     sources:
       - type: file
         url: https://github.com/indygreg/python-build-standalone/releases/download/20251217/cpython-3.10.19+20251217-x86_64-unknown-linux-gnu-install_only.tar.gz
@@ -43,10 +40,10 @@ modules:
     build-commands:
       # Extract Kiro IDE
       - mkdir -p /app/Kiro
-      - tar -xzf kiro-ide-0.11.130-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
+      - tar -xzf kiro-ide-1.0.437-stable-linux-x64.tar.gz --strip-components=1 -C /app/Kiro
       - rm -f /app/Kiro/chrome-sandbox
       # Copy icon from extracted Kiro directory
-      - cp /app/Kiro/resources/app/node_modules/@kiro/sign-in-page/src/components/kiro-logo/kiro-icon.svg dev.kiro.KiroIDE.svg
+      - cp /app/Kiro/resources/app/out/vs/workbench/contrib/welcomeDialog/common/media/kiro.svg dev.kiro.KiroIDE.svg
       # Install wrapper scripts
       - install -Dm755 git-wrapper.sh /app/bin/git
       - install -Dm755 kiro-wrapper.sh /app/bin/kiro
@@ -58,7 +55,7 @@ modules:
       - install -Dm644 default-settings.json /app/share/kiro-ide/default-settings.json
     sources:
       - type: file
-        path: kiro-ide-0.11.130-stable-linux-x64.tar.gz
+        path: kiro-ide-1.0.437-stable-linux-x64.tar.gz
       - type: file
         path: git-wrapper.sh
       - type: file
@@ -85,8 +82,6 @@ finish-args:
   - --socket=ssh-auth
   
   # D-Bus Communication
-  - --socket=session-bus
-  - --socket=system-bus
   - --talk-name=org.freedesktop.Flatpak
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.freedesktop.secrets
@@ -100,7 +95,6 @@ finish-args:
   - --filesystem=xdg-run/dconf
   - --filesystem=xdg-run/keyring
   - --filesystem=~/.var/app/dev.kiro.KiroIDE/config/dconf:ro
-  - --filesystem=host-os:ro
   
   # Environment Variables
   - --env=DCONF_USER_CONFIG_DIR=.config/dconf

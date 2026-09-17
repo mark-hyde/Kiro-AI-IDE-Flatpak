@@ -1,4 +1,5 @@
 {
     "kiroAgent.configureMCP": "Disabled",
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "python.defaultInterpreterPath": "/app/usr/bin/python3"
 }

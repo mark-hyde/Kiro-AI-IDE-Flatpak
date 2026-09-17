@@ -149,12 +149,30 @@ pip install --user <package-name>
 
 To update to a new Kiro IDE version:
 1. Download the latest Linux tarball from the official site.
-2. Replace the tarball in your project folder.
-3. Update the filename in `kiro-ide.yaml` (two locations: tar command and source path).
-4. Re-run:
+2. Drop it into your project folder (keep or remove older tarballs, either is fine).
+3. Re-run:
    ```bash
    make install
    ```
+
+`make install` runs `make bump` first, which points `kiro-ide.yaml` at the newest
+tarball automatically, so you no longer need to hand-edit the version string.
+
+### About `make bump`
+
+`make bump` runs `bump-version.sh`, which:
+- Picks the highest-version `kiro-ide-*-stable-linux-x64.tar.gz` in the folder
+  (or a specific version if you pass one, e.g. `./bump-version.sh 1.0.437`).
+- Rewrites both tarball references in `kiro-ide.yaml`.
+- Verifies the icon source path still exists in the tarball.
+
+**Icon note:** Since Kiro 1.0.4xx, `node_modules` ships packed as `node_modules.asar`,
+so icons that used to live under `node_modules/@kiro/...` can no longer be copied
+directly during the build. The manifest now uses
+`resources/app/out/vs/workbench/contrib/welcomeDialog/common/media/kiro.svg` instead.
+If a future release moves the icon again, `bump-version.sh` will warn and list the
+`.svg`/`.png` candidates it found in the new tarball so you can update the
+`cp ... dev.kiro.KiroIDE.svg` line in `kiro-ide.yaml`.
 
 ---
 

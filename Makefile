@@ -1,4 +1,4 @@
-.PHONY: help install uninstall clean
+.PHONY: help bump install uninstall clean
 
 TARBALL := $(wildcard kiro-ide-*-stable-linux-x64.tar.gz)
 
@@ -7,13 +7,18 @@ help:
 	@echo "Kiro IDE Flatpak Makefile"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  make install   - Build and install the Flatpak and 'kiro' launcher"
+	@echo "  make bump      - Point kiro-ide.yaml at the newest downloaded tarball"
+	@echo "  make install   - Bump, then build and install the Flatpak and 'kiro' launcher"
 	@echo "  make uninstall - Uninstall the Flatpak and remove 'kiro' launcher"
 	@echo "  make clean     - Clean build artifacts"
 	@echo ""
 
+# Update the manifest to reference the newest downloaded Kiro IDE tarball
+bump:
+	@./bump-version.sh
+
 # Build and install the Flatpak and launcher
-install:
+install: bump
 	@if [ -z "$(TARBALL)" ]; then \
 		echo "Error: No Kiro IDE tarball found!"; \
 		echo "Download from https://kiro.dev/downloads/ and place in this directory."; \
